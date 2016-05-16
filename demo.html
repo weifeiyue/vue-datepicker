@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <link rel="stylesheet" href="src/vue.datepicker.css">
+</head>
+<body>
+    <div>StartTime:{{startTime}}</div>
+    <div>EndTime:{{endTime}}</div>
+    <div>Time:{{time}}</div>
+    <mz-datepicker format="yyyy-MM-dd" :start-time.sync="startTime" :end-time.sync="endTime" range></mz-datepicker>
+    <mz-datepicker format="yyyy-MM-dd HH:mm:ss" clearable :time.sync="time"></mz-datepicker>
+    <mz-datepicker disabled></mz-datepicker>
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/vue/1.0.24/vue.min.js"></script>
+    <script type="text/javascript" src="src/vue.datepicker.js"></script>
+    <script type="text/javascript">
+        new Vue({
+            el: 'body',
+            data: {
+                time: '2016-05-15',
+                startTime: new Date('2016-03-31').getTime(),
+                endTime: new Date('2016-03-31').getTime()
+            }
+        });
+    </script>
+</body>
+</html>
