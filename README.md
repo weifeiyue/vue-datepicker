@@ -21,6 +21,9 @@ vue-datepicker
 <!--base-->
 <mz-datepicker></mz-datepicker>
 
+<!--english version-->
+<mz-datepicker en></mz-datepicker>
+
 <!--disabled-->
 <mz-datepicker disabled></mz-datepicker>
 
@@ -38,5 +41,9 @@ vue-datepicker
 
 <!--show range-->
 <mz-datepicker :start-time.sync="startTime" :end-time.sync="endTime" range></mz-datepicker>
+
+<!--max range(unit:day)-->
+<mz-datepicker :start-time.sync="startTime" :end-time.sync="endTime" range max-range="366"></mz-datepicker>
+
 
 ```

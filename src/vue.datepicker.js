@@ -1,5 +1,5 @@
 /*!
- * vue-datepicker v0.1.0
+ * vue-datepicker v0.1.1
  * https://github.com/weifeiyue/vue-datepicker
  * (c) 2016 weifeiyue
  * Released under the MIT License.
@@ -16,35 +16,37 @@
 }(function(Vue) {
     Vue.component('mz-datepicker', {
         template: '<div class="mz-datepicker" :style="{width:width+\'px\'}">' +
-            '<input :value="value" readonly :disabled="disabled" :class="{focus:show}" @click="click" @mousedown="$event.preventDefault()"/><a v-if="clearable&&value" @click.stop="clear"></a><i></i>' +
+            '<input :value="value" readonly :disabled="disabled" :class="{focus:show}" @click="click" @mousedown="$event.preventDefault()"/><a v-if="clearable&&value" @click.stop="clear"></a><i @click="click"></i>' +
             '<div class="mz-datepicker-popup" :class="{\'mz-datepicker-popup-left\':left}" v-if="show" transition="mz-datepicker-popup" tabindex="-1" @blur="show = false" @mousedown="$event.preventDefault()" @keyup.up="changeMonth(-1,1)" @keyup.down="changeMonth(1,1)" @keyup.left="changeYear(-1,1)" @keyup.right="changeYear(1,1)" v-el:popup>' +
-            '<div class="mz-calendar-top" v-if="range">' +
-				'<template v-for="item in ranges">'+
-					'<i v-if="$index"></i><a v-text="item.name" @click="selectRange(item)"></a>'+
-				'</template>'+
+            '<div class="mz-calendar-top" v-if="range&&!en">' +
+                '<template v-for="item in ranges">' +
+                    '<i v-if="$index"></i><a v-text="item.name" @click="selectRange(item)"></a>' +
+                '</template>' +
             '</div>' +
             '<div :class="{\'mz-calendar-range\':range}">' +
-				'<template v-for="no in count">'+
-					'<div class="mz-calendar">' +
-						'<div class="mz-calendar-header">'+
-							'<a class="mz-calendar-prev-year" title="上一年" @click="changeYear(-1,no+1)">«</a>'+
-							'<a class="mz-calendar-prev-month" title="上个月" @click="changeMonth(-1,no+1)">‹</a>'+
-							'<a class="mz-calendar-year-select" title="选择年份" @click="showYear(no+1)">{{this[\'now\'+(no+1)].getFullYear()}}年</a>'+
-							'<a class="mz-calendar-month-select" title="选择月份" @click="showMonth(no+1)">{{months[this[\'now\'+(no+1)].getMonth()]}}月</a>'+
-							'<a class="mz-calendar-next-month" title="下个月" @click="changeMonth(1,no+1)">›</a>'+
-							'<a class="mz-calendar-next-year" title="下一年" @click="changeYear(1,no+1)">»</a>'+
-						'</div>'+
-						'<table cellspacing="0" cellpadding="0">' +
-						'<tr><th v-for="day in days" v-text="day"></th></tr>' +
-						'<tr v-if="this[\'date\'+(no+1)]" v-for="i in 6"><td v-for="j in 7" v-text="this[\'date\'+(no+1)][i * 7 + j].text" :title="this[\'date\'+(no+1)][i * 7 + j].title" :class="this[\'date\'+(no+1)][i * 7 + j].status" @click="select(this[\'date\'+(no+1)][i * 7 + j], no+1)"></td></tr>' +
-						'</table>' +
-                        '<div class="mz-calendar-year-panel" transition="mz-calendar-panel" v-if="this[\'showYear\'+(no+1)]"><a class="mz-calendar-year-panel-prev" @click="changeYearRange(no+1,-1)"></a><a class="mz-calendar-year-panel-year" v-for="item in this[\'years\'+(no+1)]" :class="item.status" @click="selectYear(item,no+1)">{{item.year}}年</a><a class="mz-calendar-year-panel-next" @click="changeYearRange(no+1,1)"></a></div>'+
-                        '<div class="mz-calendar-month-panel" transition="mz-calendar-panel" v-if="this[\'showMonth\'+(no+1)]"><a v-for="item in this[\'months\'+(no+1)]" class="mz-calendar-month-panel-month" :class="item.status" @click="selectMonth(item,no+1)">{{item.month}}月</a></div>'+
+                '<template v-for="no in count">' +
+                    '<div class="mz-calendar">' +
+                        '<div class="mz-calendar-header">' +
+                            '<a class="mz-calendar-prev-year" :title="prevYearTitle" @click="changeYear(-1,no+1)">«</a>' +
+                            '<a class="mz-calendar-prev-month" :title="prevMonthTitle" @click="changeMonth(-1,no+1)">‹</a>' +
+                            '<a v-if="!en" class="mz-calendar-year-select" :title="selectYearTitle" @click="showYear(no+1)">{{this[\'now\'+(no+1)].getFullYear()+(en?"":"年")}}</a>' +
+                            '<a v-if="!en" class="mz-calendar-month-select" :title="selectMonthTitle" @click="showMonth(no+1)">{{months[this[\'now\'+(no+1)].getMonth()]}}</a>' +
+                            '<a v-if="en" class="mz-calendar-month-select" :title="selectMonthTitle" @click="showMonth(no+1)">{{months[this[\'now\'+(no+1)].getMonth()]}}</a>' +
+                            '<a v-if="en" class="mz-calendar-year-select" :title="selectYearTitle" @click="showYear(no+1)">{{this[\'now\'+(no+1)].getFullYear()+(en?"":"年")}}</a>' +
+                            '<a class="mz-calendar-next-month" :title="nextMonthTitle" @click="changeMonth(1,no+1)">›</a>' +
+                            '<a class="mz-calendar-next-year" :title="nextYearTitle" @click="changeYear(1,no+1)">»</a>' +
+                        '</div>' +
+                        '<table cellspacing="0" cellpadding="0">' +
+                        '<tr><th v-for="day in days" v-text="day"></th></tr>' +
+                        '<tr v-if="this[\'date\'+(no+1)]" v-for="i in 6"><td v-for="j in 7" v-text="this[\'date\'+(no+1)][i * 7 + j].text" :title="this[\'date\'+(no+1)][i * 7 + j].title" :class="this[\'date\'+(no+1)][i * 7 + j].status" @click="select(this[\'date\'+(no+1)][i * 7 + j], no+1)"></td></tr>' +
+                        '</table>' +
+                        '<div class="mz-calendar-year-panel" transition="mz-calendar-panel" v-if="this[\'showYear\'+(no+1)]"><a class="mz-calendar-year-panel-prev" @click="changeYearRange(no+1,-1)"></a><a class="mz-calendar-year-panel-year" v-for="item in this[\'years\'+(no+1)]" :class="item.status" @click="selectYear(item,no+1)">{{item.year+(en?"":"年")}}</a><a class="mz-calendar-year-panel-next" @click="changeYearRange(no+1,1)"></a></div>' +
+                        '<div class="mz-calendar-month-panel" transition="mz-calendar-panel" v-if="this[\'showMonth\'+(no+1)]"><a v-for="item in this[\'months\'+(no+1)]" class="mz-calendar-month-panel-month" :class="item.status" @click="selectMonth(item,no+1)">{{months[item.month-1].substr(0,3)}}</a></div>' +
                     '</div>' +
-					'<div class="mz-calendar-separator" v-if="range&&no===0"></div>' +
-				'</template>'+
+                    '<div class="mz-calendar-separator" v-if="range&&no===0"><span>{{toTitle}}</span></div>' +
+                '</template>' +
             '</div>' +
-            '<div class="mz-calendar-bottom" v-if="range"><a class="mz-calendar-btn ok" @click="show=false">确定</a></div>' +
+            '<div class="mz-calendar-bottom" v-if="range"><a class="mz-calendar-btn ok" @click="show=false">{{okTitle}}</a></div>' +
             '</div>' +
             '</div>',
         props: {
@@ -69,6 +71,12 @@
             endTime: {
                 twoWay: true
             },
+            //选择最大范围限制,以天为单位（只有range为true的时候才起作用）
+            maxRange: {
+                coerce: function(val) {
+                    return +val;
+                }
+            },
             //是否可以清除
             clearable: {
                 type: Boolean,
@@ -83,6 +91,11 @@
             disabled: {
                 type: Boolean,
                 default: false
+            },
+            //英文显示
+            en: {
+                type: Boolean,
+                default: false
             }
         },
         data: function() {
@@ -92,10 +105,18 @@
                 showYear2: false,
                 showMonth1: false,
                 showMonth2: false,
+                prevYearTitle: this.en ? 'last year' : '上一年',
+                prevMonthTitle: this.en ? 'last month' : '上个月',
+                selectYearTitle: this.en ? 'select year' : '选择年份',
+                selectMonthTitle: this.en ? 'select month' : '选择月份',
+                nextMonthTitle: this.en ? 'next month' : '下个月',
+                nextYearTitle: this.en ? 'next year' : '下一年',
+                toTitle: this.en ? 'TO' : '至',
+                okTitle: this.en ? 'OK' : '确定',
                 left: false,
                 ranges: [], //选择范围
-                days: ['一', '二', '三', '四', '五', '六', '日'],
-                months: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
+                days: this.en ? ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'] : ['一', '二', '三', '四', '五', '六', '日'],
+                months: this.en ? ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] : ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
                 years1: [],
                 years2: [],
                 months1: [],
@@ -218,7 +239,7 @@
                 }
                 var rect = this.$el.getBoundingClientRect(),
                     right = document.documentElement.clientWidth - rect.left;
-                (right < (self.range?441:214) && right < rect.left)?(self.left=true):(self.left=false);
+                (right < (self.range ? 441 : 214) && right < rect.left) ? (self.left = true) : (self.left = false);
                 self.show = !self.show;
             },
             //选择时间
@@ -318,11 +339,42 @@
                 if (this.time1 && this.time2 && time >= this.time1 && time <= this.time2) {
                     status += ' mz-calendar-inrange';
                 }
-                if (no == 1 && this.time2 && time > this.time2) {
-                    status += ' mz-calendar-disabled';
+                if (no == 1 && this.time2) {
+                    var minTime = new Date(this.time2);
+                    if (this.maxRange) {
+                        minTime.setDate(minTime.getDate() - this.maxRange);
+                        if (format === 'yyyy') {
+                            minTime = new Date(minTime.getFullYear(), 0, 1);
+                        }
+                        if (format === 'yyyy-MM') {
+                            minTime = new Date(minTime.getFullYear(), 0, 1);
+                        }
+                        if (time < minTime || time > this.time2) {
+                            status += ' mz-calendar-disabled';
+                        }
+                    } else if (time > this.time2) {
+                        status += ' mz-calendar-disabled';
+                    }
+                    if (time > this.time2) {
+                        status += ' mz-calendar-disabled';
+                    }
                 }
-                if (no == 2 && this.time1 && time < this.time1) {
-                    status += ' mz-calendar-disabled';
+                if (no == 2 && this.time1) {
+                    var maxTime = new Date(this.time1);
+                    if (this.maxRange) {
+                        maxTime.setDate(maxTime.getDate() + this.maxRange);
+                        if (format === 'yyyy') {
+                            maxTime = new Date(maxTime.getFullYear(), 11, 1);
+                        }
+                        if (format === 'yyyy-MM') {
+                            maxTime = new Date(maxTime.getFullYear(), maxTime.getMonth() + 1, 1);
+                        }
+                        if (time > maxTime || time < this.time1) {
+                            status += ' mz-calendar-disabled';
+                        }
+                    } else if (time < this.time1) {
+                        status += ' mz-calendar-disabled';
+                    }
                 }
                 return status;
             },
@@ -368,7 +420,7 @@
                 var time = new Date(this['now' + no] || new Date()),
                     num = Math.floor(time.getFullYear() % 10), //获取当前时间个位数
                     arr = [];
-                time.setDate(1);//先设置为第一天，因为月份天数不一样，要不存在bug
+                time.setDate(1); //先设置为第一天，因为月份天数不一样，要不存在bug
                 time.setFullYear(time.getFullYear() - num);
                 while (arr.length < 10) {
                     no === 2 && time.setMonth(time.getMonth() + 1, 0);
@@ -389,7 +441,7 @@
                 var time = new Date(this['now' + no] || new Date()),
                     arr = [];
                 while (arr.length < 12) {
-                    time.setDate(1);//先设置为第一天，因为月份天数不一样，要不存在bug
+                    time.setDate(1); //先设置为第一天，因为月份天数不一样，要不存在bug
                     time.setMonth(arr.length);
                     no === 2 && time.setMonth(time.getMonth() + 1, 0);
                     arr.push({
@@ -406,7 +458,7 @@
                 for (var i in arr) {
                     var item = arr[i],
                         year = item.year + 10 * flag;
-                    time.setDate(1);//先设置为第一天，因为月份天数不一样，要不存在bug
+                    time.setDate(1); //先设置为第一天，因为月份天数不一样，要不存在bug
                     time.setFullYear(year);
                     no === 2 && time.setMonth(time.getMonth() + 1, 0);
                     item.year = year;
@@ -416,7 +468,7 @@
             //改变年份
             changeYear: function(flag, no) {
                 var now = this['now' + no];
-                now.setDate(1);//先设置为第一天，因为月份天数不一样，要不存在bug
+                now.setDate(1); //先设置为第一天，因为月份天数不一样，要不存在bug
                 now.setFullYear(now.getFullYear() + flag);
                 no === 2 && now.setMonth(now.getMonth() + 1, 0);
                 this['now' + no] = new Date(now);
@@ -425,7 +477,7 @@
             //改变月份
             changeMonth: function(flag, no) {
                 var now = this['now' + no];
-                now.setDate(1);//先设置为第一天，因为月份天数不一样，要不存在bug
+                now.setDate(1); //先设置为第一天，因为月份天数不一样，要不存在bug
                 now.setMonth(now.getMonth() + flag);
                 no === 2 && now.setMonth(now.getMonth() + 1, 0);
                 this['now' + no] = new Date(now);

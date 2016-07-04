@@ -10,10 +10,11 @@
     <div>StartTime:{{startTime}}</div>
     <div>EndTime:{{endTime}}</div>
     <div>Time:{{time}}</div>
+    <mz-datepicker en></mz-datepicker>
     <mz-datepicker format="yyyy-MM-dd" :start-time.sync="startTime" :end-time.sync="endTime" range></mz-datepicker>
     <mz-datepicker format="yyyy-MM-dd HH:mm:ss" clearable :time.sync="time"></mz-datepicker>
     <mz-datepicker disabled></mz-datepicker>
-    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/vue/1.0.24/vue.min.js"></script>
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/vue/1.0.26/vue.min.js"></script>
     <script type="text/javascript" src="src/vue.datepicker.js"></script>
     <script type="text/javascript">
         new Vue({

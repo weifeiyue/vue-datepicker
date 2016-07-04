@@ -1,5 +1,5 @@
 /*!
- * vue-datepicker v0.1.0
+ * vue-datepicker v0.1.1
  * https://github.com/weifeiyue/vue-datepicker
  * (c) 2016 weifeiyue
  * Released under the MIT License.
@@ -244,8 +244,7 @@
     top: 50%;
     margin-top: -90px;
 }
-.mz-calendar-separator::after {
-    content: "至";
+.mz-calendar-separator span {
     position: absolute;
     width: 100%;
     text-align: center;
