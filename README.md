@@ -1,7 +1,7 @@
 vue-datepicker
 ========
 ### A Beautiful Datepicker Component For Vue
-* Lightweight (less than 4kb minified and gzipped)
+* Lightweight (less than 5kb minified and gzipped)
 * Only dependencies Vue
 * Beautiful!
 
@@ -45,5 +45,6 @@ vue-datepicker
 <!--max range(unit:day)-->
 <mz-datepicker :start-time.sync="startTime" :end-time.sync="endTime" range max-range="366"></mz-datepicker>
 
-
+<!--onConfirm(only in rang and confirm mode)-->
+<mz-datepicker :start-time.sync="startTime" :end-time.sync="endTime" range confirm :on-confirm="onConfirm"></mz-datepicker>
 ```

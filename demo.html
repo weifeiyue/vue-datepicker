@@ -11,7 +11,7 @@
     <div>EndTime:{{endTime}}</div>
     <div>Time:{{time}}</div>
     <mz-datepicker en></mz-datepicker>
-    <mz-datepicker format="yyyy-MM-dd" :start-time.sync="startTime" :end-time.sync="endTime" range></mz-datepicker>
+    <mz-datepicker format="yyyy-MM-dd" :start-time.sync="startTime" :end-time.sync="endTime" range en confirm :on-confirm="confrim"></mz-datepicker>
     <mz-datepicker format="yyyy-MM-dd HH:mm:ss" clearable :time.sync="time"></mz-datepicker>
     <mz-datepicker disabled></mz-datepicker>
     <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/vue/1.0.26/vue.min.js"></script>
@@ -23,6 +23,12 @@
                 time: '2016-05-15',
                 startTime: new Date('2016-03-31').getTime(),
                 endTime: new Date('2016-03-31').getTime()
+            },
+            methods:{
+                confrim:function(startTime,endTime){
+                    console.log(startTime);
+                    console.log(endTime);
+                }
             }
         });
     </script>

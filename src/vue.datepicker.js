@@ -1,5 +1,5 @@
 /*!
- * vue-datepicker v0.1.1
+ * vue-datepicker v0.1.2
  * https://github.com/weifeiyue/vue-datepicker
  * (c) 2016 weifeiyue
  * Released under the MIT License.
@@ -46,7 +46,7 @@
                     '<div class="mz-calendar-separator" v-if="range&&no===0"><span>{{toTitle}}</span></div>' +
                 '</template>' +
             '</div>' +
-            '<div class="mz-calendar-bottom" v-if="range"><a class="mz-calendar-btn ok" @click="show=false">{{okTitle}}</a></div>' +
+            '<div class="mz-calendar-bottom" v-if="range"><a class="mz-calendar-btn ok" @click="ok">{{okTitle}}</a></div>' +
             '</div>' +
             '</div>',
         props: {
@@ -92,11 +92,18 @@
                 type: Boolean,
                 default: false
             },
+            //是否需要点击确认
+            confirm: {
+                type: Boolean,
+                default: false
+            },
             //英文显示
             en: {
                 type: Boolean,
                 default: false
-            }
+            },
+            //点击确认触发事件
+            onConfirm: Function
         },
         data: function() {
             return {
@@ -133,13 +140,13 @@
         computed: {
             value: function() {
                 if (this.range) {
-                    if (this.time1 && this.time2) {
-                        return this.stringify(this.time1) + ' ~ ' + this.stringify(this.time2);
+                    if (this.startTime && this.endTime) {
+                        return this.stringify(this.parse(this.startTime, false)) + ' ~ ' + this.stringify(this.parse(this.endTime, false));
                     } else {
                         return '';
                     }
                 } else {
-                    return this.stringify(this.time1);
+                    return this.stringify(this.parse(this.time, false));
                 }
             }
         },
@@ -230,12 +237,12 @@
             //点击时间输入框的时候触发
             click: function() {
                 var self = this;
-                self.time1 = self.parse(self.time1) || self.parse(self.time);
-                self.now1 = self.parse(self.time1) || new Date();
+                self.time1 = self.parse(self.startTime) || self.parse(self.time);
+                self.now1 = self.parse(self.startTime) || new Date();
                 if (self.range) {
                     self.initRanges();
-                    self.time2 = self.parse(self.time2);
-                    self.now2 = self.parse(self.time2) || new Date();
+                    self.time2 = self.parse(self.endTime);
+                    self.now2 = self.parse(self.endTime) || new Date();
                 }
                 var rect = this.$el.getBoundingClientRect(),
                     right = document.documentElement.clientWidth - rect.left;
@@ -254,8 +261,18 @@
                 if (!self.range) {
                     self.time = self.getOutTime(item.time);
                     self.show = false;
-                } else {
+                } else if (!self.confirm) {
                     self[no === 1 ? 'startTime' : 'endTime'] = self.getOutTime(item.time);
+                }
+            },
+            //确认
+            ok: function() {
+                var self = this;
+                self.show = false;
+                if (self.range && self.confirm) {
+                    self.startTime = self.getOutTime(self.time1);
+                    self.endTime = self.getOutTime(self.time2);
+                    self.onConfirm && self.onConfirm(self.startTime, self.endTime);
                 }
             },
             //选择范围
