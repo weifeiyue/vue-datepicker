@@ -5,6 +5,9 @@ vue-datepicker
 * Only dependencies Vue
 * Beautiful!
 
+for vue2:
+[https://github.com/weifeiyue/vue-datepicker-local](https://github.com/weifeiyue/vue-datepicker-local)
+
 ![image](https://github.com/weifeiyue/vue-datepicker/raw/master/screenshots/datepicker.png)
 
 ## Usage
